@@ -1,0 +1,47 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .Values.storage.class.name }}
+provisioner: {{ .Values.storage.class.provisioner }}
+volumeBindingMode: {{ .Values.storage.class.vbmode }}
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.storage.volumes.name }}
+  namespace: {{ .Values.deployment.namespace }}
+  labels:
+    type: {{ .Values.storage.volumes.type }}
+spec:
+  storageClassName: {{ .Values.storage.class.name }}
+  claimRef:
+    name: {{ .Values.storage.claimref.name }}
+  capacity:
+    storage: {{ .Values.storage.capacity.storage }}
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /mnt
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ .Values.storage.nodeaffinity.values }}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.storage.persistent.claim.name }}
+  namespace: {{ .Values.deployment.namespace }}
+spec:
+  storageClassName: {{ .Values.storage.class.name }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.storage.persistent.claim.storage }}

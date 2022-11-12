@@ -1,0 +1,56 @@
+deployment:
+  name: jenkins-helm-deployment
+  appname: jenkins-server
+  namespace: jenkins
+
+serviceaccount:
+  name: jenkins-serviceaccount
+
+containers:
+  name: jenkins
+  image: jenkins/jenkins:lts
+
+resources:
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+  requests:
+    memory: "500Mi"
+    cpu: "500m"
+
+network:
+  port: 8080
+  containerport: 50000
+
+spec:
+  user: 1000
+  group: 1000
+
+service:
+  name: jenkins-service
+
+storage:
+  class:
+    name: local-storage
+    provisioner: kubernetes.io/no-provisioner
+    vbmode: WaitForFirstConsumer
+  volumes:
+    name: jenkins-pv-volume
+    type: local
+  claimref:
+    name: jenkins-pv-claim
+  capacity:
+    storage: 10Gi
+  nodeaffinity:
+    values: gke-cluster-testvault-default-pool-04d77d6a-hmr2
+  persistent:
+    claim:
+      name: jenkins-pv-claim
+      storage: 3Gi
+
+roles:
+  role:
+    name: jenkins-k8s-roles
+  rolebinding:
+    name: jenkins-k8s-rolebinding
+    apiGroup: rbac.authorization.k8s.io

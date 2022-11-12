@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name }}
+  namespace: {{ .Values.deployment.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  {{ .Values.deployment.appname }}
+  template:
+    metadata:
+      labels:
+        app:  {{ .Values.deployment.appname }}
+    spec:
+      securityContext:
+            fsGroup: {{ .Values.spec.group }} 
+            runAsUser: {{ .Values.spec.user }}
+      serviceAccountName: {{ .Values.serviceaccount.name }}
+      containers:
+        - name: {{ .Values.containers.name }}
+          image: {{ .Values.containers.image }}
+          resources:
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+          ports:
+            - name: httpport
+              containerPort: {{ .Values.network.port }}
+            - name: jnlpport
+              containerPort: {{ .Values.network.containerport }}
+          livenessProbe:
+            httpGet:
+              path: "/login"
+              port: {{ .Values.network.port }}
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/login"
+              port: {{ .Values.network.port }}
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: jenkins-data
+              mountPath: /var/jenkins_home         
+      volumes:
+      - name: jenkins-data
+        emptyDir: {}

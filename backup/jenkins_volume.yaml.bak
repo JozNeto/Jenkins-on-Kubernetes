@@ -30,7 +30,7 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - minikube
+          - gke-cluster-testvault-default-pool-04d77d6a-hmr2
 
 ---
 apiVersion: v1

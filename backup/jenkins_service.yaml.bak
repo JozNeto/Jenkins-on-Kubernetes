@@ -9,12 +9,11 @@ metadata:
       prometheus.io/port:   '8080'
 spec:
   selector: 
-    app: jenkins-server
-  type: NodePort  
+    app: jenkins-server    
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 32000
+  type: LoadBalancer
 
 
   # spec:
@@ -26,10 +25,10 @@ spec:
   #     targetPort: 8080
   #     nodePort: 32000
 
-  #spec:
-#   selector: 
-#     app: jenkins-server    
-#   ports:
-#     - port: 8080
-#       targetPort: 8080
-#   type: LoadBalancer
+  # spec:
+  #   selector: 
+  #     app: jenkins-server    
+  #   ports:
+  #   - port: 8080
+  #     targetPort: 8080
+  #   type: LoadBalancer
