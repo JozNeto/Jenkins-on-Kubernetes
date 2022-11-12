@@ -9,7 +9,7 @@ metadata:
       prometheus.io/port:   '8080'
 spec:
   selector: 
-    app: {{ .Values.deployment.name }}   
+    app: {{ .Values.deployment.appname }}   
   ports:
     - port: {{ .Values.network.port }}
       targetPort: {{ .Values.network.port }}
