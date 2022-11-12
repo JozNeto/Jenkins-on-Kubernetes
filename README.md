@@ -5,7 +5,7 @@
 * [kubectl](https://kubernetes.io/docs/tasks/tools/)
 * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-**On Kubernetes cluster create a namespace called 'jenkins'**<br>
+**On Kubernetes cluster create a namespace named 'jenkins'**<br>
 ~~~
 kubectl create namespace jenkins
 ~~~
